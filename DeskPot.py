@@ -7,9 +7,25 @@ import os
 import mss
 import time
 
-MESSAGE = 'Intruder!'
-MESSAGE_SIZE = 120
+###################
+# START OF CONFIG #
+###################
 
+# Message to flash to the intruder
+MESSAGE = 'Intruder!'
+# Character size of the message
+MESSAGE_SIZE = 120
+# Total number of click/keypresses to trigger the message and start of the photo shoot
+EVENTS_TO_WAIT = 4
+# Number of photos to shoot
+N_OF_PHOTOS = 20
+# Time between the photos in seconds
+# Don't choose a too low value or this can make the script irresponsive
+PHOTO_INTERVAL = 0.5
+
+#################
+# END OF CONFIG #
+#################
 
 class Unclosable_Fullscreen_Window:
 
@@ -42,7 +58,7 @@ class Unclosable_Fullscreen_Window:
         panel = tk.Label(self.frame, image = self.img)
 
         self.bind_events(panel)
-        # Il label occupa tutto lo schermo
+        # The label takes up all the screen
         panel.pack(side = "bottom", fill = "both", expand = "yes")
 
         self.message_label = tk.Label(panel, text = MESSAGE, font = ("Courier", MESSAGE_SIZE), bg='red', fg='yellow')
@@ -53,12 +69,12 @@ class Unclosable_Fullscreen_Window:
         element.bind("<Key>", self.user_event_handler)
 
     def user_event_handler(self, evt):
-        if self.event_counter != 4: # Numero di click/tasti da aspettare prima di triggherare la foto/video
+        if self.event_counter != EVENTS_TO_WAIT:
             self.event_counter += 1
         else:
-            # Cominciamo subito a fare foto
+            # Start taking photos
             #take_pictures_of_intruder()
-            # Ma aspettiamo 2 secondi prima di avvertire il malcapitato
+            # We wait 2 seconds before warning the intruder that something is off
             self.window.after(2000, self.message_label.place, ({'relx':0.5, 'rely':0.5, 'anchor':'center'}))
             self.window.after(2000, self.flash_message)
             self.event_counter += 1
@@ -72,7 +88,7 @@ class Unclosable_Fullscreen_Window:
     def end_fullscreen(self, evt):
         sys.exit()
 
-# L'opzione --no-wait evita di aspettare 3 secondi prima di far partire DeskPot
+# with --no-wait the script takes the desktop's screenshoot right away instead of waiting 3 seconds. 
 if not(len(sys.argv) > 1 and sys.argv[1] == '--no-wait'):
     time.sleep(3)
 
