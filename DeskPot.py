@@ -8,7 +8,7 @@ import mss
 import time
 
 MESSAGE = 'Intruder!'
-MESSAGE_SIZE = 100
+MESSAGE_SIZE = 120
 
 
 class Unclosable_Fullscreen_Window:
@@ -53,7 +53,7 @@ class Unclosable_Fullscreen_Window:
         element.bind("<Key>", self.user_event_handler)
 
     def user_event_handler(self, evt):
-        if self.event_counter != 1:
+        if self.event_counter != 4: # Numero di click/tasti da aspettare prima di triggherare la foto/video
             self.event_counter += 1
         else:
             # Cominciamo subito a fare foto
@@ -71,7 +71,7 @@ class Unclosable_Fullscreen_Window:
 
     def end_fullscreen(self, evt):
         sys.exit()
-        
+
 # L'opzione --no-wait evita di aspettare 3 secondi prima di far partire DeskPot
 if not(len(sys.argv) > 1 and sys.argv[1] == '--no-wait'):
     time.sleep(3)
