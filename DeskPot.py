@@ -6,6 +6,7 @@ import datetime
 import os
 import mss
 import cv2
+import pygame
 
 ###################
 # START OF CONFIG #
@@ -22,6 +23,13 @@ N_OF_PHOTOS = 10
 # Time between the photos in seconds
 # Don't choose a too low value or this can make the script irresponsive
 PHOTO_INTERVAL = 0.5
+# Sound configuration: if enabled, plays a sound while the flashing message is displayed
+AUDIO = 0
+# if you want to add custom sounds, place audio files in folder 'audio'
+# and edit this entry to the name of the file
+AUDIO_SOURCE = "Spaceship_Alarm.mp3"
+#audio_file = "Alarm_Clock.mp3"
+#audio_file = "Man_Laugh_And_Knee_Slap.mp3"
 
 #################
 # END OF CONFIG #
@@ -50,12 +58,10 @@ class Unclosable_Fullscreen_Window:
 
         self.setup_components()
 
-
     def take_screenshot(self):
         ms = mss.mss()
         self.img = ms.grab(ms.monitors[0])
         self.img = Image.frombytes("RGB", self.img.size, self.img.bgra, "raw", "BGRX")
-
 
     def setup_components(self):
         self.img = ImageTk.PhotoImage(self.img)
@@ -83,10 +89,13 @@ class Unclosable_Fullscreen_Window:
             self.camera_handle = cv2.VideoCapture(0)
             # Start taking photos
             self.take_pictures_of_intruder()
+            # Play audio if set
+            self.play_audio()
+
             # We wait 2 seconds before warning the intruder that something is off
             self.window.after(2000, self.message_label.place, ({'relx':0.5, 'rely':0.5, 'anchor':'center'}))
             self.window.after(2000, self.flash_message)
-            
+
 
     def flash_message(self):
         fg = self.message_label.cget('bg')
@@ -115,6 +124,16 @@ class Unclosable_Fullscreen_Window:
         except Exception as e:
             print(str(e))
             sys.exit()
+
+    def play_audio(self):
+            if AUDIO:
+                try:
+                    pygame.mixer.init()
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.load('audio/' + AUDIO_SOURCE)
+                    pygame.mixer.music.play()
+                except:
+                    pass
 
     def end_fullscreen(self, evt):
         sys.exit()
