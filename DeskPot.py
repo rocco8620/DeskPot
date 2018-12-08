@@ -5,7 +5,6 @@ import time
 import datetime
 import os
 import mss
-import time
 
 ###################
 # START OF CONFIG #
