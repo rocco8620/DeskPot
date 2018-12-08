@@ -5,6 +5,7 @@ import time
 import datetime
 import os
 import mss
+import cv2
 
 ###################
 # START OF CONFIG #
@@ -44,14 +45,14 @@ class Unclosable_Fullscreen_Window:
         self.event_counter = 0
 
         self.setup_components()
-       
+
 
     def take_screenshot(self):
         ms = mss.mss()
         self.img = ms.grab(ms.monitors[0])
         self.img = Image.frombytes("RGB", self.img.size, self.img.bgra, "raw", "BGRX")
 
-       
+
     def setup_components(self):
         self.img = ImageTk.PhotoImage(self.img)
         panel = tk.Label(self.frame, image = self.img)
@@ -73,6 +74,13 @@ class Unclosable_Fullscreen_Window:
         else:
             # Start taking photos
             #take_pictures_of_intruder()
+            camera = cv2.VideoCapture(0)
+            for i in range(0, N_OF_PHOTOS):
+                status, image = camera.read()
+                cv2.imwrite('photos/intruder'+str(i)+'.png', image)
+                time.sleep(PHOTO_INTERVAL)
+            del(camera)
+
             # We wait 2 seconds before warning the intruder that something is off
             self.window.after(2000, self.message_label.place, ({'relx':0.5, 'rely':0.5, 'anchor':'center'}))
             self.window.after(2000, self.flash_message)
@@ -87,7 +95,7 @@ class Unclosable_Fullscreen_Window:
     def end_fullscreen(self, evt):
         sys.exit()
 
-# with --no-wait the script takes the desktop's screenshoot right away instead of waiting 3 seconds. 
+# with --no-wait the script takes the desktop's screenshoot right away instead of waiting 3 seconds.
 if not(len(sys.argv) > 1 and sys.argv[1] == '--no-wait'):
     time.sleep(3)
 
