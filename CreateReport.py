@@ -53,7 +53,7 @@ if '{{intruder_images}}' in template_data:
     # Put the data in the template
     template_data = template_data.replace('{{intruder_images}}', intruder_images_html)
 
-open('out.html', 'w').write(template_data)
+#open('out.html', 'w').write(template_data)
 
 
 options = {

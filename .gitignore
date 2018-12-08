@@ -1,5 +1,9 @@
 # Doesn't sincronize hack attempt raw files and reports
+reports/
 hack_attemp_*
 
 # virtual environment
 env/
+
+#backup files
+*~
