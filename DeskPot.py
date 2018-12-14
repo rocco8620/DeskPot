@@ -50,7 +50,7 @@ class Unclosable_Fullscreen_Window:
         self.window.protocol('WM_DELETE_WINDOW', lambda: None)
         self.window.lift()
 
-        self.event_counter = 0
+        self.event_counter = 1
         self.took_photos = 0
         self.camera_handle = None
 
