@@ -1,0 +1,10 @@
+{
+   "message": "Intruder!",
+   "message_size": 120,
+   "events_to_wait": 4,
+   "n_of_photos": 10,
+   "photo_interval": 0.5,
+   "audio": 0,
+   "audio_source": "Spaceship_Alarm.mp3",
+   "escape_shortcut": "<Control-Shift-S>"
+}

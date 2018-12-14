@@ -7,10 +7,12 @@ import os
 import mss
 import cv2
 import pygame
+import json
 
 ###################
 # START OF CONFIG #
 ###################
+# this is the default config, if you want to make changes, use config.json file
 
 # Message to flash to the intruder
 MESSAGE = 'Intruder!'
@@ -30,15 +32,30 @@ AUDIO = 0
 AUDIO_SOURCE = "Spaceship_Alarm.mp3"
 #audio_file = "Alarm_Clock.mp3"
 #audio_file = "Man_Laugh_And_Knee_Slap.mp3"
+ESCAPE_SHORTCUT = "<Control-Shift-S>"
+
+# load configuration in file config.json
+try:
+        config_file = open("config.json", "r")
+        json_data = json.loads(config_file.read())
+        MESSAGE = json_data["message"]
+        MESSAGE_SIZE = json_data["message_size"]
+        EVENTS_TO_WAIT = json_data["events_to_wait"]
+        N_OF_PHOTOS = json_data["n_of_photos"]
+        PHOTO_INTERVAL = json_data["photo_interval"]
+        AUDIO = json_data["audio"]
+        AUDIO_SOURCE = json_data["audio_source"]
+        ESCAPE_SHORTCUT = json_data["escape_shortcut"]
+except:
+        pass
 
 #################
 # END OF CONFIG #
 #################
 
-class Unclosable_Fullscreen_Window:
+class DeskPot:
 
     def __init__(self):
-
         self.take_screenshot()
 
         self.window = tk.Tk()
@@ -46,11 +63,11 @@ class Unclosable_Fullscreen_Window:
         self.frame.pack()
         self.window.attributes("-fullscreen", True)
         self.window.attributes("-topmost", True)
-        self.window.bind("<Escape>", self.end_fullscreen)
+        self.window.bind(ESCAPE_SHORTCUT, self.end_fullscreen)
         self.window.protocol('WM_DELETE_WINDOW', lambda: None)
         self.window.lift()
 
-        self.event_counter = 1
+        self.event_counter = 0
         self.took_photos = 0
         self.camera_handle = None
 
@@ -142,6 +159,6 @@ class Unclosable_Fullscreen_Window:
 if not(len(sys.argv) > 1 and sys.argv[1] == '--no-wait'):
     time.sleep(3)
 
-main = Unclosable_Fullscreen_Window()
+main = DeskPot()
 main.window.mainloop()
 main.window.overrideredirect(True)
