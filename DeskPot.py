@@ -127,7 +127,8 @@ class DeskPot:
         self.took_photos = 0
         self.camera_handle = None
 
-        self.intrusion_data_folder = "reports/hack_attemp_" + time.strftime("%d-%m-%y_%H:%M", time.localtime())
+        base = os.path.dirname(os.path.realpath(__file__))
+        self.intrusion_data_folder = os.path.join(base, "reports/hack_attemp_" + time.strftime("%d-%m-%y_%H:%M", time.localtime()))
 
         
 
