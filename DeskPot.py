@@ -33,7 +33,8 @@ AUDIO = 0
 AUDIO_SOURCE = "Spaceship_Alarm.mp3"
 #audio_file = "Alarm_Clock.mp3"
 #audio_file = "Man_Laugh_And_Knee_Slap.mp3"
-ESCAPE_SHORTCUT = "<Control-Shift-S>"
+ESCAPE_SHORTCUT_LOWER = "<Control-Shift-s>"
+ESCAPE_SHORTCUT_UPPER = "<Control-Shift-S>"
 
 # decommentare quando verra' fixato.
 #   - Non verifica il tipo degli argomenti
@@ -71,7 +72,8 @@ class FakeWindow:
 
         self.parent.attributes("-fullscreen", True)
         self.parent.attributes("-topmost", True)
-        self.parent.bind(ESCAPE_SHORTCUT, self.root.end_fullscreen) # cambiare percorso handler
+        self.parent.bind(ESCAPE_SHORTCUT_LOWER, self.root.end_fullscreen) 
+        self.parent.bind(ESCAPE_SHORTCUT_UPPER, self.root.end_fullscreen) 
         self.parent.protocol('WM_DELETE_WINDOW', lambda: None)
         self.parent.lift()
 
@@ -89,8 +91,8 @@ class FakeWindow:
         self.message_label = tk.Label(panel, text = MESSAGE, font = ("Courier", MESSAGE_SIZE), bg='red', fg='yellow')
 
     def bind_events(self, element):
-        element.bind("<Button-1>", self.root.user_event_handler) # cambiare percorso handler
-        element.bind("<Key>", self.root.user_event_handler)      # cambiare percorso handler
+        element.bind("<Button-1>", self.root.user_event_handler) 
+        element.bind("<Key>", self.root.user_event_handler) 
 
 
     def flash_message(self):
@@ -127,7 +129,8 @@ class DeskPot:
         self.took_photos = 0
         self.camera_handle = None
 
-        self.intrusion_data_folder = "reports/hack_attemp_" + time.strftime("%d-%m-%y_%H:%M", time.localtime())
+        base = os.path.dirname(os.path.realpath(__file__))
+        self.intrusion_data_folder = os.path.join(base, "reports/hack_attemp_" + time.strftime("%d-%m-%y_%H:%M", time.localtime()))
 
         
 

@@ -1,4 +1,7 @@
 #!/bin/bash
+BASE="`dirname "${0}"`"
 
-source "env/bin/activate"
-python3 DeskPot.py --no-wait
+
+source "${BASE}/env/bin/activate"
+python3 "${BASE}/DeskPot.py" --no-wait
+
