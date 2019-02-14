@@ -5,102 +5,30 @@ import time
 import datetime
 import os
 import mss
-import cv2
-import pygame
-import json
-import screeninfo
 
-###################
-# START OF CONFIG #
-###################
-# this is the default config, if you want to make changes, use config.json file
 
-# Message to flash to the intruder
-MESSAGE = 'Intruder!'
-# Character size of the message
-MESSAGE_SIZE = 120
-# Total number of click/keypresses to trigger the message and start of the photo shoot
-EVENTS_TO_WAIT = 3
-# Number of photos to shoot
-N_OF_PHOTOS = 14
-# Time between the photos in seconds
-# Don't choose a too low value or this can make the script irresponsive
-PHOTO_INTERVAL = 0.5
-# Sound configuration: if enabled, plays a sound while the flashing message is displayed
-AUDIO = 0
-# if you want to add custom sounds, place audio files in folder 'audio'
-# and edit this entry to the name of the file
-AUDIO_SOURCE = "Spaceship_Alarm.mp3"
-#audio_file = "Alarm_Clock.mp3"
-#audio_file = "Man_Laugh_And_Knee_Slap.mp3"
-ESCAPE_SHORTCUT_LOWER = "<Control-Shift-s>"
-ESCAPE_SHORTCUT_UPPER = "<Control-Shift-S>"
-
-# decommentare quando verra' fixato.
-#   - Non verifica il tipo degli argomenti
-#   - Rischia di caricare la configurazione a metà se il caricamento fallisce
-
-# load configuration in file config.json
-#try:
-#        config_file = open("config.json", "r")
-#        json_data = json.loads(config_file.read())
-#        MESSAGE = json_data["message"]
-#        MESSAGE_SIZE = json_data["message_size"]
-#        EVENTS_TO_WAIT = json_data["events_to_wait"]
-#        N_OF_PHOTOS = json_data["n_of_photos"]
-#        PHOTO_INTERVAL = json_data["photo_interval"]
-#        AUDIO = json_data["audio"]
-#        AUDIO_SOURCE = json_data["audio_source"]
-#        ESCAPE_SHORTCUT = json_data["escape_shortcut"]
-#except:
-#        pass
-
-#################
-# END OF CONFIG #
-#################
 
 class FakeWindow:
-    def __init__(self, root, parent, image, geom):
+    def __init__(self, root, parent, image):
         self.root = root
         self.parent = parent
         self.img = image
 
-        self.frame = tk.Frame(self.parent)
-        self.frame.pack()
-
-        self.parent.geometry(geom)
-
+        self.parent.geometry("500x500+0+0")
         self.parent.attributes("-fullscreen", True)
         self.parent.attributes("-topmost", True)
-        self.parent.bind(ESCAPE_SHORTCUT_LOWER, self.root.end_fullscreen) 
-        self.parent.bind(ESCAPE_SHORTCUT_UPPER, self.root.end_fullscreen) 
-        self.parent.protocol('WM_DELETE_WINDOW', lambda: None)
-        self.parent.lift()
+        self.frame = tk.Canvas(self.parent, bd=0, highlightthickness=0)
+        self.frame.pack(side = "bottom", fill = "both", expand = "yes")
 
         self.setup_components()
 
 
     def setup_components(self):
         self.img = ImageTk.PhotoImage(self.img)
-        panel = tk.Label(self.frame, image = self.img)
-
-        self.bind_events(panel)
-        # The label takes up all the screen
-        panel.pack(side = "bottom", fill = "both", expand = "yes")
-
-        self.message_label = tk.Label(panel, text = MESSAGE, font = ("Courier", MESSAGE_SIZE), bg='red', fg='yellow')
-
-    def bind_events(self, element):
-        element.bind("<Button-1>", self.root.user_event_handler) 
-        element.bind("<Key>", self.root.user_event_handler) 
-
-
-    def flash_message(self):
-        fg = self.message_label.cget('bg')
-        bg = self.message_label.cget('fg')
-        self.message_label.configure(background=bg, foreground=fg)
-        self.parent.after(200, self.flash_message)
-
+        
+        self.frame.create_image(0, 0, image=self.img, anchor='nw')
+        #pix = self.img.load()
+        #pix[10, 10] = (0, 255, 0)
 
 
 ## creazione fake windows 
@@ -207,7 +135,12 @@ if not(len(sys.argv) > 1 and sys.argv[1] == '--no-wait'):
 
 
 root = tk.Tk()
-main = DeskPot(root)
+with mss.mss() as ms:
+    img = ms.grab(ms.monitors[2])
+
+img = Image.frombytes("RGB", img.size, img.bgra, "raw", "BGRX")
+
+main = FakeWindow(None, root, img)
 root.mainloop()
 
 
